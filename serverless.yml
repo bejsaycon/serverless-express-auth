@@ -1,0 +1,37 @@
+org: bejsaycon
+app: auth-system
+service: auth-system-serverless
+frameworkVersion: '3'
+
+custom:
+  serverless-offline:
+    httpPort: 4000
+    websocketPort: 4001
+    lambdaPort: 4002
+    noPrependStageInUrl: true
+
+provider:
+  environment:
+    DATABASE_URI: ${param:DATABASE_URI}
+    ACCESS_TOKEN_SECRET: ${param:ACCESS_TOKEN_SECRET}
+    REFRESH_TOKEN_SECRET: ${param:REFRESH_TOKEN_SECRET}
+  name: aws
+  runtime: nodejs14.x
+  logs:
+    httpApi: true
+  httpApi:
+    cors: true
+  
+functions:
+  auth:
+    handler: auth.handler
+    events:
+      - httpApi:
+          method: POST
+          path: /login
+      - httpApi:
+          method: POST
+          path: /register
+
+plugins:
+  - serverless-offline
